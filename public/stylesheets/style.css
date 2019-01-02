@@ -1,8 +1,229 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+#head{
+    font-family: 'Alex Brush', cursive;
+    font-size: 5em;
+    text-align: center;
+    margin: 0%;
+    padding: 0%;
+}
+.auth{
+    margin: 1.5em 0em 1em 0em;
+    padding: 0%;
+    text-align: center;
+    font-size: 1.3em;
+}
+.separator{
+    display: inline;
+    margin: 0em 0.5em 0em 0.5em;
+}
+a{
+    text-decoration: none;
+}
+.auth a{
+    font-family: 'Cuprum', sans-serif;
+    color: #14a564;
 }
 
-a {
-  color: #00B7FF;
+.createNote{
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    display: none;
+}
+
+.createNote > form {
+    width: 400px;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #14a564);
+    background: -webkit-linear-gradient(#fff, #14a564);
+    background: -o-linear-gradient(#fff, #14a564);
+}
+
+.close {
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 25px;
+    position: absolute;
+    right: -12px;
+    text-align: center;
+    top: -10px;
+    width: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+    cursor: default;
+}
+    
+.close:hover { background: #2f00ff; }
+
+.note{
+    width: 300px;
+    background: rgb(239, 255, 251);
+    border-radius: 10px;
+    border: 1px solid rgb(0, 44, 139);
+    padding: 1em;
+    margin:1em ;
+    display: inline-grid;
+    word-wrap: break-word;
+    height: 200px;
+}
+.title{
+    margin: 0%;
+    text-align: center;
+    font-weight:bold;
+    font-size: 1.2em;
+    width: 290px;
+    cursor: default;
+}
+.edit{
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    display: none;
+}
+.edit > .edit-conteiner {
+    width: 400px;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #14a564);
+    background: -webkit-linear-gradient(#fff, #14a564);
+    background: -o-linear-gradient(#fff, #14a564);
+}
+#container{ 
+    display: grid; 
+    margin-left: 2em;
+}
+#create{
+    font-size: 1.5em;
+    color:#14a564;
+    margin-left: 2em;
+    cursor: pointer;
+}
+.deleteNote {
+    line-height: 20px;
+    position: absolute;
+    cursor: pointer;
+}
+@media screen and (max-width: 1120px) {
+    .note{margin-left: 0em; width: 270px;}
+}
+
+@media screen and (max-width: 480px){
+    #container{margin-left: 0em}
+    .note{margin-left: 0.5em; width: 300px}
+}
+.deleteNote{
+    font-size: 1.5em;
+}
+.content{
+    width: 290px;
+    white-space: pre-line;
+    height: 100px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+.editNote{
+    cursor: pointer;
+    font-style: italic;
+    color: #606061;
+    font-size: 0.9em;
+    border-bottom: 1px dashed;
+    width: 100px
+}
+.closeEditNote{
+    display: block;
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+.editTitle{
+    margin: 1em 0em 1em 0em;
+    border-radius: 7px;
+}
+.editContent{
+    width: 100%;
+    margin-bottom: 1em;
+    border-radius: 7px;
+    resize: none;
+    height: 35%;
+}
+#read_etc {
+    color: gray;
+    font-size: 1.3em;
+}
+.saveNoteUpdate{
+    border-radius: 10px;
+    background: #f9fdc0;
+    border: 0.5px solid gray;
+    padding: 4px;
+}
+#create-ok{
+    cursor: pointer;
+    width: 100px;
+    background: white;
+    text-align: center;
+    border-radius: 7px;
+    border: 1px solid black;
+}
+#title{
+    border-radius: 7px;
+}
+#content{
+    border-radius: 7px;
+    width: 180px;
+}
+#login-title, #register-title{
+    text-align: center;
+}
+#form-login, #form-register{
+    margin: auto;
+}
+#login-email, #login-password, #register-nickname, #register-email, #register-password{
+    margin-bottom: 1em;
+    height: 2em;
+    width: 15em;
+    border-radius: 10px;
+    padding-left: 0.7em;
+    outline: none;
+}
+#login-email:focus, #login-password:focus, #register-nickname:focus, #register-email:focus, #register-password:focus{
+    border:1.5px outset #14a564;
+    border-radius:10px;
+}
+
+#login-submit, #register-submit{
+    background: #effff6;
+    border-radius: 10px;
+    border: 2px outset #14a564;
+    height: 2em;
+    text-align: center;
+}
+#errorLogin{
+    text-align: center;
 }

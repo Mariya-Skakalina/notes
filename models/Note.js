@@ -10,6 +10,10 @@ const noteShema = new Schema({
     user:{
         ref: 'users',
         type: Schema.Types.ObjectId
+    },
+    date:{
+        type: Date,
+        default: Date.now
     }
 })
 
