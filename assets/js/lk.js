@@ -34,7 +34,7 @@ class Main {
         })
         let updateNote = new CreateDomElement({nameTag: 'button', idTag:'update'+key._id, classTag:'saveNoteUpdate', parentElement:'editC'+key._id, text:'Редактровать'})
         updateNote.addEventListener('click', function(){
-            fetch('http://localhost:3000/edit/'+key._id, 
+            fetch(location.origin+'/edit/'+key._id, 
                 {method: 'PUT', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, 
                     body: JSON.stringify({title: document.getElementById('uptitle'+key._id).value, 
                     content: document.getElementById('upcontent'+key._id).value})})
@@ -48,7 +48,7 @@ class Main {
     }
 
     inits(){   
-        fetch('http://localhost:3000/notes')
+        fetch(location.origin+'/notes')
         .then(result => result.json())
         .then((result) => {
              if (result !== undefined && result.length !== 0){
@@ -63,7 +63,7 @@ class Main {
                     const deleteNote1 = document.querySelectorAll('.deleteNote')
                     for (let i of deleteNote1){
                         i.addEventListener('click', function name(el) {
-                            fetch('http://localhost:3000/delete/'+this.attributes['idelement'].value,{method:'DELETE',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
+                            fetch(location.origin+'/delete/'+this.attributes['idelement'].value,{method:'DELETE',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
                             .then(res => {
                                 this.parentNode.remove()
                             })
@@ -80,7 +80,7 @@ class Main {
 
         const logout = document.getElementById('logout')
         logout.addEventListener('click', ()=> {
-            fetch('http://localhost:3000/logout', {method:"POST"})
+            fetch(location.origin+'/logout', {method:"POST"})
             .then(res => res.json())
             .then((res)=>{
                 location.href = '/';
@@ -91,7 +91,7 @@ class Main {
         create_ok.addEventListener('click', () => {
             const title = document.getElementById('title');
             const content = document.getElementById('content')
-            fetch('http://localhost:3000/create', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({title: title.value, content: content.value})})
+            fetch(location.origin+'/create', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({title: title.value, content: content.value})})
             .then(res => res.json())
             .then(res => {
                 console.log(res)

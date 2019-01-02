@@ -13,7 +13,7 @@ function loginUser (){
     new CreateDomElement({nameTag:'br', parentElement: 'form-login'});
     const login_submit = new CreateDomElement({nameTag: 'button', idTag:'login-submit', attributeTag:[['type', 'submit']], parentElement: 'form-login', text: 'Войти'});
     login_submit.addEventListener('click', () => {
-        fetch('http://localhost:3000/login', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({email: login_email.value, password: login_password.value})})
+        fetch(location.origin+'/login', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({email: login_email.value, password: login_password.value})})
         .then((res) =>  res.json())
         .then( (res)=>{
             if (res.auth){
@@ -40,7 +40,7 @@ if(register){
         new CreateDomElement({nameTag:'br', parentElement: 'form-register'});
         const register_submit = new CreateDomElement({nameTag: 'button', idTag:'register-submit', attributeTag:[['type', 'submit']], parentElement: 'form-register', text: 'Зарегистрироваться'});
         register_submit.addEventListener('click', () => {
-            fetch('http://localhost:3000/register', {method:'POST',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({nickname:register_nickname.value, email: register_email.value, password: register_password.value})})
+            fetch(location.origin+'/register', {method:'POST',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({nickname:register_nickname.value, email: register_email.value, password: register_password.value})})
             .then((res) =>  res.json())
             .then( (res)=>{
                 if(res.error){
@@ -60,7 +60,7 @@ if(register){
     });
 };
 
-fetch('http://localhost:3000/auth', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
+fetch(location.origin+'/auth', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
 .then((res) =>  res.json())
 .then( (res)=>{
     if (res.auth){

@@ -92,7 +92,7 @@ router.post('/register', async function createNote(req, res){
         to: user.email, // list of receivers
         subject: 'Регистрация', // Subject line
         text: 'Регистрация ...', // plain text body
-        html: `<p>Активация вашего аккаунта тыкните на <a href="http://localhost:3000/user/activate/${user.a_code}">ссылку</> <p/>` // html body
+        html: `<p>Активация вашего аккаунта тыкните на <a href="http://${req.hostname}/user/activate/${user.a_code}">ссылку</> <p/>` // html body
       };
 
       // send mail with defined transport object
