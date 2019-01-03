@@ -13,8 +13,7 @@ const {transporter} = require('../config/email')
 router.use(async (req,res,next)=>{
   await jwt.verify(req.cookies.KEY, key.jwt, async function(err, decoded) {
     if (decoded == undefined){
-      console.log(req.originalUrl)
-      if(req.originalUrl !== '/' && req.originalUrl !== '/register' && req.originalUrl !== '/login'){
+      if(req.originalUrl !== '/' && req.originalUrl !== '/register' && req.originalUrl !== '/login' && req.originalUrl.indexOf('/user/activate/') === -1){
           res.redirect('/');
           // next()
       } else {
@@ -60,13 +59,13 @@ router.get('/user/activate/:a_code', async function(req,res){
         result.active = true;
         result.a_code = '';
         result.save()
-        res.json({res: true})
+        res.send('Ваша почта подтверждена')
       } else {
-        res.json({res: false})
+        res.redirect('/');
       }
     })
   } else {
-    res.json({res: false})
+     res.redirect('/');
   }
 })
 
@@ -88,11 +87,11 @@ router.post('/register', async function createNote(req, res){
     try{
       await user.save()
       let mailOptions = {
-        from: '"Notes" <mashka@mashka.com>', // sender address
+        from: '"Notes" <admin@mynotes.su>', // sender address
         to: user.email, // list of receivers
         subject: 'Регистрация', // Subject line
         text: 'Регистрация ...', // plain text body
-        html: `<p>Активация вашего аккаунта тыкните на <a href="http://${req.hostname}/user/activate/${user.a_code}">ссылку</> <p/>` // html body
+        html: `<p>Активация вашего аккаунта тыкните на <a href="http://mynotes.su/user/activate/${user.a_code}">ссылку</> <p/>` // html body
       };
 
       // send mail with defined transport object
@@ -100,8 +99,6 @@ router.post('/register', async function createNote(req, res){
           if (error) {
               return console.log(error);
           }
-          console.log('Message sent: %s', info.messageId);
-          console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       });
       res.json(user)
     }catch(error){
@@ -110,17 +107,18 @@ router.post('/register', async function createNote(req, res){
   }
 });
 
-// Код для восстановление пароля
+// Страница для восстановление пароля
 router.get('/user/remember/:a_code', async (req, res) => {
   if (req.params.a_code){
     User.findOne({a_code:req.params.a_code}).then((result)=>{
       if (result !== undefined && result !== null){
-        result.password = req.body.password;
-        result.a_code = '';
-        result.save()
-        res.json({res: true})
+        res.render('index', {
+          auth: false,
+          remember: true,
+          user: result.email
+        })
       } else {
-        res.json({res: false})
+        res.redirect('/')
         }
     })
   }
@@ -128,20 +126,27 @@ router.get('/user/remember/:a_code', async (req, res) => {
 
 // Восстановление пароля
 router.get('/login/remember', (res, req) => {
-    let mailOptions = {
-      from: '"Fred Foo 👻" <mashka@mashka.com>', // sender address
-      to: user.email, // list of receivers
-      subject: 'Восстановление пароля', // Subject line
-      text: 'Восстановление пароля', // plain text body
-      html: `<p>Активация вашего аккаунта тыкните на <a href="http://localhost:3000/user/remember/${user.a_code}">ссылку</> <p/>` // html body
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-          return console.log(error);
+    if(req.email){
+      const user = User.findOne({email: req.email});
+      if(user){
+        user.a_code = crypto.randomBytes(20).toString('hex');
+        user.save();
+        let mailOptions = {
+          from: '"Notes remember" <admin@notes.su>', // sender address
+          to: user.email, // list of receivers
+          subject: 'Восстановление пароля', // Subject line
+          text: 'Восстановление пароля', // plain text body
+          html: `<p>Активация вашего аккаунта тыкните на <a href="http://mynotes.su/user/remember/${user.a_code}">ссылку</> <p/>` // html body
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              return console.log(error);
+          }
+        });
       }
-      console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  });
+      
+    }
+    
 })
 
 router.post('/auth', (req, res) =>{
@@ -196,7 +201,6 @@ router.put('/edit/:id', function editNote(req, res){
       _id: req.user.id
     }
   }).then((result)=>{ //.update({title:req.param('title'),content:req.param('content')})
-    console.log(req.param('title'))
     result.title = req.param('title');
     result.content = req.param('content');
     result.save();
@@ -234,6 +238,17 @@ router.get('/notes', (req, res) => {
       _id: req.user.id
     }}).sort('-date')
     .then(result => res.json(result))
+})
+
+router.put('/remember/password', function(req, res){
+  const user = User.findOne({email: req.param('email')})
+  if(user && password.length >4){
+    user.password = req.param('password')
+    user.save()
+     res.redirect('/');
+  }else{
+    res.json({error: true, message: 'Некорректные данные'})
+  }
 })
 
 module.exports = router;

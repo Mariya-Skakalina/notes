@@ -9,6 +9,9 @@ module.exports = {
             './assets/js/main.js',
             // './style/index.scss'
         ],
+        'passwordRecovery': [
+            './assets/js/passwordRecovery.js'
+        ]
     },
 
     output: {

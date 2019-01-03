@@ -38,6 +38,18 @@
                 <p id="create-ok">Отправить</p>
             </form>
           </div>
+          <% } else if(remember){ %>
+            <p id="emailR">{{user}}</p>
+            <div>
+              <p>Востановление пароля</p>
+              <br>
+              <input type="password" name="password" id="password">
+              <br>
+              <input type="password" name="passwordR" id="passwordR">
+              <br>
+              <p id="password_ok">Отправить</p>
+            </div>
+            <script src="/javascripts/passwordRecovery.js"></script>
           <% } else { %>
             <p>Для создания заметок Вам необходимо войти на сайт или зарегистрироваться</p>
         <% } %>
