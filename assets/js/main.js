@@ -12,6 +12,16 @@ function loginUser (){
     const login_password =  new CreateDomElement({nameTag: 'input', idTag:'login-password', attributeTag:[['type', 'password'], ['placeholder', 'Ваш пароль']], parentElement: 'form-login'});
     new CreateDomElement({nameTag:'br', parentElement: 'form-login'});
     const login_submit = new CreateDomElement({nameTag: 'button', idTag:'login-submit', attributeTag:[['type', 'submit']], parentElement: 'form-login', text: 'Войти'});
+    const password_remmmber = new CreateDomElement({nameTag: 'a', idTag:'remember-password', parentElement: 'container', text: 'Восстановить пароль'})
+    password_remmmber.addEventListener('click', () => {
+        const remember_email = new CreateDomElement({nameTag: 'input', idTag:'remember-password-input', attributeTag:[['type', 'email'], ['placeholder', 'Ваш email']], parentElement: 'container'});
+        new CreateDomElement({nameTag:'br', parentElement: 'container'});
+        const button_remember = new CreateDomElement({nameTag: 'button', idTag:'remember-submit', attributeTag:[['type', 'submit']], parentElement: 'container', text: 'Восстановить'});
+        button_remember.addEventListener('click', () => {
+            fetch(location.origin+'/login/remember', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({email: remember_email.value})})
+            .then(res => res.json())
+        })
+    })
     login_submit.addEventListener('click', () => {
         fetch(location.origin+'/login', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({email: login_email.value, password: login_password.value})})
         .then((res) =>  res.json())

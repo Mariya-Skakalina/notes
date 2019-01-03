@@ -38,8 +38,10 @@
                 <p id="create-ok">Отправить</p>
             </form>
           </div>
+          
+            <script src="/javascripts/main.js"></script>
           <% } else if(remember){ %>
-            <p id="emailR">{{user}}</p>
+            <p id="emailR"><%= user %></p>
             <div>
               <p>Востановление пароля</p>
               <br>
@@ -52,8 +54,8 @@
             <script src="/javascripts/passwordRecovery.js"></script>
           <% } else { %>
             <p>Для создания заметок Вам необходимо войти на сайт или зарегистрироваться</p>
+            <script src="/javascripts/main.js"></script>
         <% } %>
     </div>
-    <script src="/javascripts/main.js"></script>
   </body>
 </html>

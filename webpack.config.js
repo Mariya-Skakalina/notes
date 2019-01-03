@@ -10,6 +10,7 @@ module.exports = {
             // './style/index.scss'
         ],
         'passwordRecovery': [
+            '@babel/polyfill',
             './assets/js/passwordRecovery.js'
         ]
     },

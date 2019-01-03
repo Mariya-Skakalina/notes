@@ -13,7 +13,9 @@ const {transporter} = require('../config/email')
 router.use(async (req,res,next)=>{
   await jwt.verify(req.cookies.KEY, key.jwt, async function(err, decoded) {
     if (decoded == undefined){
-      if(req.originalUrl !== '/' && req.originalUrl !== '/register' && req.originalUrl !== '/login' && req.originalUrl.indexOf('/user/activate/') === -1){
+      if(req.originalUrl !== '/' && req.originalUrl !== '/register' && 
+          req.originalUrl !== '/login' && req.originalUrl.indexOf('/user/activate/') === -1 
+          && req.originalUrl.indexOf('/remember/') === -1 && req.originalUrl !== '/login/remember'){
           res.redirect('/');
           // next()
       } else {
@@ -42,11 +44,13 @@ router.get('/', function(req, res) {
   if (users !== undefined){
     res.render('index', { 
       auth:true,
+      remember: false,
       users
     });
   } else{
     res.render('index', {
-      auth: false
+      auth: false,
+      remember: false,
     })
   }
 });
@@ -125,9 +129,9 @@ router.get('/user/remember/:a_code', async (req, res) => {
 })
 
 // Восстановление пароля
-router.get('/login/remember', (res, req) => {
-    if(req.email){
-      const user = User.findOne({email: req.email});
+router.post('/login/remember', async (req,res) => {
+    if(req.body.email){
+      const user = await User.findOne({email: req.body.email});
       if(user){
         user.a_code = crypto.randomBytes(20).toString('hex');
         user.save();
@@ -143,6 +147,7 @@ router.get('/login/remember', (res, req) => {
               return console.log(error);
           }
         });
+
       }
       
     }
@@ -240,12 +245,12 @@ router.get('/notes', (req, res) => {
     .then(result => res.json(result))
 })
 
-router.put('/remember/password', function(req, res){
-  const user = User.findOne({email: req.param('email')})
-  if(user && password.length >4){
-    user.password = req.param('password')
+router.put('/remember/password', async function(req, res){
+  const user = await User.findOne({email: req.param('email')})
+  if(user && req.param('password').length >4){
+    user.password =bcrypt.hashSync(req.param('password'), bcrypt.genSaltSync(10));
     user.save()
-     res.redirect('/');
+    res.json({message: "Пароль обновлен"});
   }else{
     res.json({error: true, message: 'Некорректные данные'})
   }
