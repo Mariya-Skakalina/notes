@@ -5,8 +5,8 @@ class Main {
         this.inits();
         this.create_dom();
     }
-
-    async notes_view(key,position){
+// Отображение заметки
+    async view_note(key, position){
         if (position === undefined){
             position = '';
         }
@@ -18,12 +18,17 @@ class Main {
         } else {
             contents.textContent = key.content
         }
+    }
+// Удаление заметок
+    async delete_note(key){
         new CreateDomElement({nameTag: 'a', classTag:'deleteNote', attributeTag:[['idElement', key._id]], parentElement: key._id, text:'×'})
         let editNote = new CreateDomElement({nameTag: 'a', classTag:'editNote', parentElement: key._id, text: 'Редактировать'})
         editNote.addEventListener('click', () => {
             document.getElementById('edit'+key._id).style.display = 'block'
         })
-
+    }
+// Редактирование заметок
+    async update_note(key){
         new CreateDomElement({nameTag: 'div', classTag:'edit', idTag:'edit'+key._id, parentElement: key._id, })
         new CreateDomElement({nameTag: 'div', classTag:'edit-conteiner', idTag:'editC'+key._id, parentElement: 'edit'+key._id, })
         new CreateDomElement({nameTag:'input', idTag:'uptitle'+key._id, classTag: 'editTitle', attributeTag:[['type', 'text'], ['value', key.title]], parentElement:'editC'+key._id})
@@ -46,18 +51,45 @@ class Main {
                 })
         })
     }
+    async notes_view(key, position){
+        await this.view_note(key, position)
+        await this.delete_note(key)
+        await this.update_note(key)
+    }
+// Создание заметок
+    create_note(){
+        const create_ok = document.getElementById('create-ok');
+        create_ok.addEventListener('click', () => {
+            const title = document.getElementById('title');
+            const content = document.getElementById('content')
+            fetch(location.origin+'/create', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({title: title.value, content: content.value})})
+            .then(res => res.json())
+            .then(res => {
+                console.log(res)
+                this.notes_view(res,'-')
+                document.getElementById('createNote').style.display = 'none';
+            })
+        })
+
+        document.getElementById('create').addEventListener('click', function(){
+            document.getElementById('createNote').style.display = 'block';
+        },false)
+        
+        document.getElementById('close_create').addEventListener('click', function(){
+            document.getElementById('createNote').style.display = 'none';
+        },false)
+    }
 
     inits(){   
         fetch(location.origin+'/notes')
         .then(result => result.json())
         .then((result) => {
-             if (result !== undefined && result.length !== 0){
-                new CreateDomElement({nameTag: 'div', idTag:'notes', classTag: 'notes', parentElement:'container'})
+            new CreateDomElement({nameTag: 'div', idTag:'notes', classTag: 'notes', parentElement:'container'})
+            if (result !== undefined && result.length !== 0){
                 new Promise(async (reject,resolve)=>{
                     for (let key of result){
                        await this.notes_view(key)
                     }
-                    // flf
                     reject();
                 }).then((res)=>{
                     const deleteNote1 = document.querySelectorAll('.deleteNote')
@@ -87,26 +119,7 @@ class Main {
             })
         })
 
-        const create_ok = document.getElementById('create-ok');
-        create_ok.addEventListener('click', () => {
-            const title = document.getElementById('title');
-            const content = document.getElementById('content')
-            fetch(location.origin+'/create', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({title: title.value, content: content.value})})
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)
-                this.notes_view(res,'-')
-                document.getElementById('createNote').style.display = 'none';
-            })
-        })
-
-        document.getElementById('create').addEventListener('click', function(){
-            document.getElementById('createNote').style.display = 'block';
-        },false)
-        
-        document.getElementById('close_create').addEventListener('click', function(){
-            document.getElementById('createNote').style.display = 'none';
-        },false)
+        this.create_note()
     }
 }
 

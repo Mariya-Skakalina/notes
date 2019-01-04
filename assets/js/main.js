@@ -3,6 +3,7 @@ const container = document.getElementById('container');
 import {CreateDomElement, DeleteElement} from './component/domelements.js';
 import {Main} from './lk.js';
 // nameTag, idTag, classTag, attributeTag[[],[]], parentElement, text
+
 function loginUser (){
     new DeleteElement('container');
     new CreateDomElement({nameTag:'h2', idTag: 'login-title', parentElement:'container', text:'Вход'})
@@ -36,6 +37,7 @@ function loginUser (){
         });
     });
 }
+
 const register = document.getElementById('register')
 if(register){
     register.addEventListener('click', () => {

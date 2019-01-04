@@ -193,10 +193,20 @@ a{
 }
 #title{
     border-radius: 7px;
+    outline: none
+}
+#title:focus{
+    border-radius: 7px;
+    border: 1.2px solid #514057;
 }
 #content{
     border-radius: 7px;
     width: 180px;
+    outline: none;
+}
+#content:focus{
+    border-radius: 7px;
+    border: 1.2px solid #514057;
 }
 #login-title, #register-title{
     text-align: center;
@@ -226,4 +236,28 @@ a{
 }
 #errorLogin{
     text-align: center;
+}
+.error-register{
+    text-align: center;
+}
+#remember-password{
+    text-align: center;
+    color: gray;
+    border-bottom: 1px dashed;
+    width: 160px;
+    margin: auto;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    cursor: pointer;
+}
+#remember-password-input{
+    margin: auto;
+    border-radius: 10px;
+    padding-left: 1em;
+}
+#remember-submit{
+    margin: auto;
+    background: white;
+    border-radius: 7px;
+    border: 2px outset #14a564;
 }

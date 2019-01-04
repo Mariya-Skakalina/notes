@@ -27,7 +27,11 @@ class CreateDomElement{
             if (element.parentElement[0] === "-"){
                 element.parentElement = element.parentElement.slice(1)
                 let nodes = document.getElementById(element.parentElement)
-                nodes.insertBefore(newElement,nodes.children[0]);
+                if (nodes.children !== null){
+                    nodes.insertBefore(newElement,nodes.children[0]);
+                } else {
+                    document.getElementById(element.parentElement).appendChild(newElement);
+                }
             } else {
                 document.getElementById(element.parentElement).appendChild(newElement);
             }
