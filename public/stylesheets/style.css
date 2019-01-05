@@ -252,6 +252,7 @@ a{
 }
 #remember-password-input{
     margin: auto;
+    margin-bottom: 1em;
     border-radius: 10px;
     padding-left: 1em;
 }
@@ -260,4 +261,11 @@ a{
     background: white;
     border-radius: 7px;
     border: 2px outset #14a564;
+}
+#remember-container{
+    display: none;
+    margin: auto;
+}
+#regeister-head{
+    text-align: center;
 }

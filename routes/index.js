@@ -76,38 +76,47 @@ router.get('/user/activate/:a_code', async function(req,res){
 
 // api для регистрация
 router.post('/register', async function createNote(req, res){
-  const candidate = await User.findOne({email: req.body.email});
-  if(candidate){
-    res.json({"message": "Такой email уже занят. Попробуйте другой", error: true})
-  }else{
-    const solt = bcrypt.genSaltSync(10)
-    const password = req.body.password
-    const user = new User({
-      nickname: req.body.nickname,
-      email: req.body.email,
-      password: bcrypt.hashSync(password, solt),
-      a_code: crypto.randomBytes(20).toString('hex')
-    })
-    try{
-      await user.save()
-      let mailOptions = {
-        from: '"Notes" <admin@mynotes.su>', // sender address
-        to: user.email, // list of receivers
-        subject: 'Регистрация', // Subject line
-        text: 'Регистрация ...', // plain text body
-        html: `<p>Активация вашего аккаунта тыкните на <a href="http://mynotes.su/user/activate/${user.a_code}">ссылку</> <p/>` // html body
-      };
+  let email = req.body.email
+  if(email && email !== undefined){
+    const candidate = await User.findOne({email: req.body.email});
+    if(candidate){
+      res.json({"message": "Такой email уже занят. Попробуйте другой", error: true})
+    }else{
+        let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        if(reg.test(email) == false){
+          res.json({message: 'Введите корректный email', error: true});
+        }
+      const solt = bcrypt.genSaltSync(10)
+      const password = req.body.password
+      const user = new User({
+        nickname: req.body.nickname,
+        email: req.body.email,
+        password: bcrypt.hashSync(password, solt),
+        a_code: crypto.randomBytes(20).toString('hex')
+      })
+      try{
+        await user.save()
+        let mailOptions = {
+          from: '"Notes" <admin@mynotes.su>', // sender address
+          to: user.email, // list of receivers
+          subject: 'Регистрация', // Subject line
+          text: 'Регистрация ...', // plain text body
+          html: `<p>Активация вашего аккаунта тыкните на <a href="http://mynotes.su/user/activate/${user.a_code}">ссылку</> <p/>` // html body
+        };
 
-      // send mail with defined transport object
-      transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-              return console.log(error);
-          }
-      });
-      res.json(user)
-    }catch(error){
-      console.log(error)
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+        });
+        res.json(user)
+      }catch(error){
+        console.log(error)
+      }
     }
+  }else{
+     res.json({message: 'Заполните все поля', error: true});
   }
 });
 
@@ -140,7 +149,7 @@ router.post('/login/remember', async (req,res) => {
           to: user.email, // list of receivers
           subject: 'Восстановление пароля', // Subject line
           text: 'Восстановление пароля', // plain text body
-          html: `<p>Активация вашего аккаунта тыкните на <a href="http://mynotes.su/user/remember/${user.a_code}">ссылку</> <p/>` // html body
+          html: `<p>Восстановление пароля <a href="http://mynotes.su/user/remember/${user.a_code}">ссылку</> <p/>` // html body
         };
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {

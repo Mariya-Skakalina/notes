@@ -21,11 +21,8 @@ class Main {
     }
 // Удаление заметок
     async delete_note(key){
-        new CreateDomElement({nameTag: 'a', classTag:'deleteNote', attributeTag:[['idElement', key._id]], parentElement: key._id, text:'×'})
-        let editNote = new CreateDomElement({nameTag: 'a', classTag:'editNote', parentElement: key._id, text: 'Редактировать'})
-        editNote.addEventListener('click', () => {
-            document.getElementById('edit'+key._id).style.display = 'block'
-        })
+        let remove_element = new CreateDomElement({nameTag: 'a', classTag:'deleteNote', attributeTag:[['idElement', key._id]], parentElement: key._id, text:'×'})
+        this.remove_elements(remove_element);
     }
 // Редактирование заметок
     async update_note(key){
@@ -34,6 +31,10 @@ class Main {
         new CreateDomElement({nameTag:'input', idTag:'uptitle'+key._id, classTag: 'editTitle', attributeTag:[['type', 'text'], ['value', key.title]], parentElement:'editC'+key._id})
         new CreateDomElement({nameTag:'textarea', idTag:'upcontent'+key._id, classTag: 'editContent', attributeTag:[['value', key.content]], parentElement:'editC'+key._id}).innerText=key.content
         let clouseEditNote = new CreateDomElement({nameTag: 'a', classTag: 'closeEditNote', parentElement:'editC' + key._id, text: "Отменить изменения"})
+        let editNote = new CreateDomElement({nameTag: 'a', classTag:'editNote', parentElement: key._id, text: 'Редактировать'})
+        editNote.addEventListener('click', () => {
+            document.getElementById('edit'+key._id).style.display = 'block'
+        })
         clouseEditNote.addEventListener('click', () => {
             document.getElementById('edit' + key._id).style.display = 'none'
         })
@@ -79,7 +80,22 @@ class Main {
             document.getElementById('createNote').style.display = 'none';
         },false)
     }
-
+    async remove_elements(el){
+        let deleteNote1 = undefined;
+        if(el !== undefined){
+            deleteNote1 = [el]
+        }else{
+            deleteNote1 = document.querySelectorAll('.deleteNote')
+        }
+        for (let i of deleteNote1){
+            i.addEventListener('click', function name(el) {
+                fetch(location.origin+'/delete/'+this.attributes['idelement'].value,{method:'DELETE',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
+                .then(res => {
+                    this.parentNode.remove()
+                })
+            })
+        }
+    }
     inits(){   
         fetch(location.origin+'/notes')
         .then(result => result.json())
@@ -92,15 +108,7 @@ class Main {
                     }
                     reject();
                 }).then((res)=>{
-                    const deleteNote1 = document.querySelectorAll('.deleteNote')
-                    for (let i of deleteNote1){
-                        i.addEventListener('click', function name(el) {
-                            fetch(location.origin+'/delete/'+this.attributes['idelement'].value,{method:'DELETE',headers:{'Accept':'application/json', 'Content-Type': 'application/json'}})
-                            .then(res => {
-                                this.parentNode.remove()
-                            })
-                        })
-                    }
+                    this.remove_elements();
                 })
                 
             }
