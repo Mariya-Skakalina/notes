@@ -46,9 +46,10 @@ class Main {
                     content: document.getElementById('upcontent'+key._id).value})})
                 .then(res =>  res.json())
                 .then(res => {
-                    document.getElementById('edit' + key._id).style.display = 'none'
-                    document.getElementById('title'+key._id).innerText = res.title
-                    document.getElementById('content'+key._id).innerText = res.content
+                    document.getElementById('edit' + key._id).style.display = 'none';
+                    document.getElementById('title'+key._id).innerText = res.title;
+                    document.getElementById('content'+key._id).innerText = res.content;
+                    
                 })
         })
     }
@@ -66,9 +67,10 @@ class Main {
             fetch(location.origin+'/create', {method:'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({title: title.value, content: content.value})})
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 this.notes_view(res,'-')
                 document.getElementById('createNote').style.display = 'none';
+                document.getElementById('title').value = ''
+                document.getElementById('content').value = ''
             })
         })
 
@@ -113,6 +115,7 @@ class Main {
                 
             }
         })
+        this.profile_edit()
 
     }
 
@@ -128,6 +131,22 @@ class Main {
         })
 
         this.create_note()
+    }
+
+    profile_edit(){
+        let edit = document.getElementById('profile-edit')
+        edit.addEventListener('click', function(){
+            fetch(location.origin + '/edit-profile', 
+                {method: 'POST', headers:{'Accept':'application/json', 'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({nickname: document.getElementById('profile-nickname').value, 
+                    email: document.getElementById('profile-email').value,
+                    password: document.getElementById('profile-password').value})})
+                .then(res => res.json())
+                .then( (res) =>{
+                    new CreateDomElement({nameTag:'p',idTag:'info', parentElement:'user-profile', text:res.message})
+                }   
+            )
+        })
     }
 }
 

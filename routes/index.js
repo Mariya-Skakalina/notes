@@ -15,7 +15,8 @@ router.use(async (req,res,next)=>{
     if (decoded == undefined){
       if(req.originalUrl !== '/' && req.originalUrl !== '/register' && 
           req.originalUrl !== '/login' && req.originalUrl.indexOf('/user/activate/') === -1 
-          && req.originalUrl.indexOf('/remember/') === -1 && req.originalUrl !== '/login/remember'){
+          && req.originalUrl.indexOf('/remember/') === -1 && req.originalUrl !== '/login/remember'
+          && req.originalUrl.indexOf('/profile/edit/email/') === -1){
           res.redirect('/');
           // next()
       } else {
@@ -27,7 +28,7 @@ router.use(async (req,res,next)=>{
         req.user = user;
         next()
       } else {
-        if(req.originalUrl !== '/' && req.originalUrl !== '/register' && req.originalUrl !== '/login'){
+        if(req.originalUrl !== '/' && req.originalUrl !== '/register' && req.originalUrl !== '/login' && req.originalUrl.indexOf('/profile/edit/email/') === -1){
           res.redirect('/');
           // next()
         } else {
@@ -77,7 +78,9 @@ router.get('/user/activate/:a_code', async function(req,res){
 // api для регистрация
 router.post('/register', async function createNote(req, res){
   let email = req.body.email
-  if(email && email !== undefined){
+  let password = req.body.password
+  let nickname = req.body.nickname
+  if(email && email !== undefined && password && password !== undefined && nickname && nickname !== undefined && password>4){
     const candidate = await User.findOne({email: req.body.email});
     if(candidate){
       res.json({"message": "Такой email уже занят. Попробуйте другой", error: true})
@@ -87,7 +90,6 @@ router.post('/register', async function createNote(req, res){
           res.json({message: 'Введите корректный email', error: true});
         }
       const solt = bcrypt.genSaltSync(10)
-      const password = req.body.password
       const user = new User({
         nickname: req.body.nickname,
         email: req.body.email,
@@ -116,7 +118,7 @@ router.post('/register', async function createNote(req, res){
       }
     }
   }else{
-     res.json({message: 'Заполните все поля', error: true});
+     res.json({message: 'Заполните все поля корректно', error: true});
   }
 });
 
@@ -264,5 +266,72 @@ router.put('/remember/password', async function(req, res){
     res.json({error: true, message: 'Некорректные данные'})
   }
 })
+
+//Подтверждение новой почты
+router.get('/profile/edit/email/:email/:activation_code', async (req,res)=>{
+  const user = await User.findOne({a_code: req.params.activation_code});
+  if (user){
+    user.email = req.params.email;
+    user.a_code = '';
+    user.save()
+    res.redirect('/');
+  } else {
+     res.redirect('/');
+  }
+
+})
+
+
+// Изменение почты
+router.post('/edit-profile', (req, res) => {
+  let nickname =req.body.nickname
+  let email =req.body.email
+  let password =req.body.password
+  if(req.user.nickname !== nickname){
+    if(nickname.length > 3){
+      req.user.nickname = nickname
+    }else{
+      res.json({message: 'Слишком короткий никнейм'})
+    }
+    
+  }
+  if(req.user.email !== email){
+    if( email.length > 8){
+      let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+      if(reg.test(email) == false){
+        res.json({message: 'Введите корректный email', error: true});
+      }
+      let a_code= crypto.randomBytes(20).toString('hex')
+      req.user.a_code=a_code;
+      // req.user.email = email;
+      let mailOptions = {
+        from: '"Notes remember" <admin@notes.su>', // sender address
+        to: email, // list of receivers
+        subject: 'Изменение почты', // Subject line
+        text: 'Изменение почты', // plain text body
+        html: `<p>Изменение почты <a href="http://mynotes.su/profile/edit/email/${email}/${a_code}">ссылку</> <p/>` // html body
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+      });
+    }else{
+      res.json({message:'Слишком короткий email'})
+    }
+    
+  }
+  if(req.user.password !== password && password.length !== 0){
+    if(password.length > 5){
+      const solt = bcrypt.genSaltSync(10)
+      req.user.password = bcrypt.hashSync(password, solt)
+    }else{
+       res.json({message:'Пароль должен быть не менее 5 символов'});
+    }
+    
+  }
+  req.user.save()
+  res.json({message: 'Изменения внесены'})
+});
 
 module.exports = router;

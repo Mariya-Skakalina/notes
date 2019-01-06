@@ -23,6 +23,12 @@
     <hr>
     <div id="container">
         <% if(auth) { %>
+          <div id="user-profile">
+            <input type="text" id="profile-nickname" value="<%= users.nickname %>">
+            <input type="email" id="profile-email" value="<%= users.email %>">
+            <input type="password" id="profile-password">
+            <a id="profile-edit">Изменить</a>
+          </div>
           <p><a id="create">Добавить заметку</a></p>
           <div id="createNote" class="createNote">
             <form method="POST" id="createSup">

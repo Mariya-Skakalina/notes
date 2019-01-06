@@ -59,6 +59,8 @@ if(register){
         new CreateDomElement({nameTag:'br', parentElement: 'form-register'});
         const register_email = new CreateDomElement({nameTag: 'input', idTag:'register-email', attributeTag:[['type', 'email'], ['placeholder', 'Ваш email']], parentElement: 'form-register'});
         new CreateDomElement({nameTag:'br', parentElement: 'form-register'});
+        new CreateDomElement({nameTag:'p', idTag: 'password-right', parentElement: 'form-register', text: 'Ваш пароль должен быть не меньше 5 символов'})
+        new CreateDomElement({nameTag:'br', parentElement: 'form-register'});
         const register_password =  new CreateDomElement({nameTag: 'input', idTag:'register-password', attributeTag:[['type', 'password'], ['placeholder', 'Ваш пароль']], parentElement: 'form-register'});
         new CreateDomElement({nameTag:'br', parentElement: 'form-register'});
         const register_submit = new CreateDomElement({nameTag: 'button', idTag:'register-submit', attributeTag:[['type', 'submit']], parentElement: 'form-register', text: 'Зарегистрироваться'});

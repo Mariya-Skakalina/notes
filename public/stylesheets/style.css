@@ -269,3 +269,9 @@ a{
 #regeister-head{
     text-align: center;
 }
+#password-right{
+    margin: 0px;
+    padding: 0em;
+    color: gray;
+    font-size: 0.8em;
+}
